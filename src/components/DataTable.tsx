@@ -1,68 +1,69 @@
 import type { Person } from '../types';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
+import { Badge } from "./ui/badge";
 
 interface DataTableProps {
   data: Person[];
 }
 
+const getDepartmentColor = (department: string) => {
+  const colors = {
+    '開発': 'bg-blue-100 text-blue-800',
+    'デザイン': 'bg-purple-100 text-purple-800',
+    '営業': 'bg-green-100 text-green-800',
+    'マーケティング': 'bg-orange-100 text-orange-800',
+    '人事': 'bg-pink-100 text-pink-800',
+  };
+  return colors[department as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+};
+
 export const DataTable = ({ data }: DataTableProps) => {
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-              ID
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-              名前
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-              年齢
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-              メール
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-              部署
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-              給与
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-              入社日
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {data.map((person) => (
-            <tr key={person.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {person.id}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {person.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {person.age}歳
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {person.email}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                  {person.department}
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ¥{person.salary.toLocaleString()}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {person.joinDate}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>ID</TableHead>
+          <TableHead>名前</TableHead>
+          <TableHead>年齢</TableHead>
+          <TableHead>メール</TableHead>
+          <TableHead>部署</TableHead>
+          <TableHead className="text-right">給与</TableHead>
+          <TableHead>入社日</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data.map((person) => (
+          <TableRow key={person.id}>
+            <TableCell className="font-medium">{person.id}</TableCell>
+            <TableCell className="font-medium">{person.name}</TableCell>
+            <TableCell>{person.age}歳</TableCell>
+            <TableCell className="text-sm text-muted-foreground">
+              {person.email}
+            </TableCell>
+            <TableCell>
+              <Badge 
+                variant="secondary"
+                className={getDepartmentColor(person.department)}
+              >
+                {person.department}
+              </Badge>
+            </TableCell>
+            <TableCell className="text-right font-mono">
+              ¥{person.salary.toLocaleString()}
+            </TableCell>
+            <TableCell className="text-sm">
+              {person.joinDate}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
