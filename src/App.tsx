@@ -1,19 +1,23 @@
 import { useState, useMemo } from 'react';
 import { Layout, Card, CardHeader, CardTitle, CardContent, DataTable, SearchBar } from './components';
-import { csvData } from './data/sampleData';
+import employeesData from './data/employees.csv';
+import type { Person } from './types';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Type assertion for CSV data (from generic CSV loader to specific type)
+  const typedEmployeesData = employeesData as unknown as Person[];
+
   const filteredData = useMemo(() => {
-    if (!searchTerm) return csvData;
+    if (!searchTerm) return typedEmployeesData;
     
-    return csvData.filter(person =>
+    return typedEmployeesData.filter((person: Person) =>
       person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       person.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       person.department.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm]);
+  }, [searchTerm, typedEmployeesData]);
 
   return (
     <Layout>
@@ -25,7 +29,7 @@ function App() {
           <CardContent>
             <p className="mb-4">
               このアプリケーションは完全にオフラインで動作します。
-              静的なCSVデータを表示・検索できます。
+              静的なデータを表示・検索できます。
             </p>
             <div className="mb-4">
               <SearchBar
@@ -35,7 +39,7 @@ function App() {
               />
             </div>
             <div className="text-sm text-gray-600 mb-2">
-              {filteredData.length}件中 {filteredData.length}件を表示
+              全{typedEmployeesData.length}件中 {filteredData.length}件を表示
             </div>
           </CardContent>
         </Card>

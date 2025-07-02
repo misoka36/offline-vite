@@ -1,4 +1,4 @@
-import type { Person } from '../data/sampleData';
+import type { Person } from '../types';
 
 interface DataTableProps {
   data: Person[];
